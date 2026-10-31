@@ -57,14 +57,14 @@ class KarmaController(object):
 
     def ratelimit_count(self, workspace_id, gifter):
         collection = self.mongodb[workspace_id]
-        d = datetime.datetime.utcnow() + datetime.timedelta(hours=-1)
-        count = collection.find(
+        d = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=1)
+        count = collection.count_documents(
             {
                 "$and": [
                     {"date": {"$gt": d}},
                     {"gifter": {"$eq": gifter}}
                 ]
-            }).count()
+            })
         return count
 
     def handle_command(self, command):
@@ -147,7 +147,7 @@ class KarmaController(object):
         return self.cmd_karma_help(command)
 
     def store_karma(self, ktype, subject, quantity, gifter, workspace_id):
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         expires = now + datetime.timedelta(days=settings.KARMA_TTL)
         data = {
             'type': ktype,
@@ -251,8 +251,10 @@ class KarmaController(object):
             pipeline.insert(0, {"$match": {"type": ktype}})
 
         results = collection.aggregate(pipeline)
-        r = results.next()
-        return r['total_subjects']
+        result = next(iter(results), None)
+        if result is None:
+            return 0
+        return result['total_subjects']
 
     @staticmethod
     def karma_error_reply(eventw, message):
@@ -534,7 +536,7 @@ class KarmaController(object):
 
         current_app.logger.info(f"show karma stats for subject: {subject} type: {ktype}")
 
-        karma_ops = collection.find({"subject": subject, "type": ktype}).count()
+        karma_ops = collection.count_documents({"subject": subject, "type": ktype})
 
         gifters = self.get_gifters(workspace_id, ktype, subject)
         karma = self.get_karma(workspace_id, ktype, subject)
@@ -676,16 +678,16 @@ class KarmaController(object):
         workspace_id = command['team_id']
         collection = self.mongodb[workspace_id]
 
-        total_count = collection.find({"$or": [
+        total_count = collection.count_documents({"$or": [
             {"type": "thing"},
             {"type": "user"},
             {"type": "channel"},
             {"type": "group"}
-        ]}).count()
-        thing_count = collection.find({"type": "thing"}).count()
-        user_count = collection.find({"type": "user"}).count()
-        channel_count = collection.find({"type": "channel"}).count()
-        group_count = collection.find({"type": "group"}).count()
+        ]})
+        thing_count = collection.count_documents({"type": "thing"})
+        user_count = collection.count_documents({"type": "user"})
+        channel_count = collection.count_documents({"type": "channel"})
+        group_count = collection.count_documents({"type": "group"})
 
         total_karma = self.get_all_karma(workspace_id)
         thing_karma = self.get_type_karma(workspace_id, "thing")

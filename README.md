@@ -56,6 +56,19 @@ db.WKSPCID.createIndex( { "expires": 1 }, { expireAfterSeconds: 0 } )
 
 ## Setup
 
+Python 3.14 is required and is the version currently tested in CI. The
+container image also runs Python 3.14.
+
+Install the project dependencies with [Poetry](https://python-poetry.org/):
+
+```sh
+poetry install
+poetry run pytest
+```
+
+Run the application with Docker Compose as described below, or use the Poetry
+environment to run project commands with `poetry run`.
+
 * Set up MongoDB somewhere, should be persistent if you don't want to loose your Karma
 * Set up a Metrics service, something that accepts InfluxDB line protocol over a TCP port.  See the `docker-compose.yml` for an example of a Telegraph instance that does this. 
 * Create the app entry in `api.slack.com/apps`.

@@ -52,7 +52,7 @@ def create_app():
     def error_handler(error):
         """Handle any exceptions gracefully"""
 
-        app.logger.warn(f"Got an exception: {error}")
+        app.logger.warning(f"Got an exception: {error}")
         app.logger.exception(error)
         return error.to_response()
 

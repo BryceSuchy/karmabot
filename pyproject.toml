@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "karmabot"
+version = "1.0.1"
+description = "A Slack bot to track Karma points"
+authors = ["Jay Kline <jay.kline@target.com>"]
+readme = "README.md"
+repository = "https://github.com/target/karmabot"
+packages = [{ include = "karmabot" }]
+classifiers = ["Programming Language :: Python :: 3.14"]
+
+[tool.poetry.dependencies]
+python = ">=3.14,<4.0"
+Flask = ">=3.1,<4.0"
+urlfetch = ">=3.0,<4.0"
+pymongo = ">=4.15,<5.0"
+influxdb-client = ">=1.49,<2.0"
+python-json-logger = ">=4.0,<5.0"
+flask-executor = ">=1.0,<2.0"
+hvac = ">=2.4,<3.0"
+gunicorn = ">=26.0,<27.0"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.3"
+radon = "^6.0"
+pytest = "^9.2.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

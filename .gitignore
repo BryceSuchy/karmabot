@@ -1,6 +1,42 @@
-*.pyc
-*.egg-info
-kubernetes/secrets.yml
-.idea/
-venv
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+
+# Packaging and build artifacts
+build/
+dist/
+wheels/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+
+# Test and coverage artifacts
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local environment and secrets
 .env
+.env.*
+!.env.example
+kubernetes/secrets.yml
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Editors and operating systems
+.idea/
+.DS_Store
+Thumbs.db
+.vscode

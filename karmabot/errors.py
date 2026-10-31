@@ -42,11 +42,7 @@ class ErrorResponse(Exception):
             "ok": False,
             "error": self.message
         })
-        response = Response()
-        response.status_code = self.status_code
-        response.set_data(body)
-
-        return response
+        return Response(body, status=self.status_code, mimetype="application/json")
 
 
 class InvalidRequestError(ErrorResponse):

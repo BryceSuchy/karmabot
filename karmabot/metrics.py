@@ -14,7 +14,7 @@
 
 from functools import wraps
 from urllib.parse import urlparse
-from influxdb.line_protocol import make_lines
+from influxdb_client import Point
 import time
 import socket
 import os
@@ -51,16 +51,11 @@ def _get_connection():
 
 
 def log_metrics(measurement, tags, field, value):
-    json_body = {'points': [
-        {
-            'measurement': measurement,
-            'tags': tags,
-            'fields': {
-                field: value
-            }
-        }
-    ]}
-    output = make_lines(json_body, None)
+    point = Point(measurement)
+    for tag, tag_value in (tags or {}).items():
+        point.tag(tag, tag_value)
+    point.field(field, value)
+    output = f"{point.to_line_protocol()}\n"
     s = _get_connection()
     s.send(output.encode())
     s.close()

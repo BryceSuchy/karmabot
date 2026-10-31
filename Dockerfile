@@ -1,12 +1,12 @@
-FROM python:3
-RUN pip3 install gunicorn
+FROM python:3.14
 
-COPY requirements.txt setup.py /app/
 WORKDIR /app
-RUN pip3 install -r requirements.txt
+ENV POETRY_VIRTUALENVS_CREATE=false
+RUN pip3 install --no-cache-dir poetry==2.2.1
 
+COPY pyproject.toml poetry.lock README.md /app/
 COPY karmabot /app/karmabot
-RUN pip3 install .
+RUN poetry install --only main --no-interaction --no-ansi
 
 ADD start.sh /app/main
 

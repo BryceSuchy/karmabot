@@ -8,23 +8,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v1
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.14
+      uses: actions/setup-python@v6
       with:
-        python-version: 3.7
+        python-version: "3.14"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install poetry==2.2.1
+        poetry install --no-interaction --no-ansi
+    - name: Run tests
+      run: poetry run pytest
     - name: Lint with flake8
       run: |
-        pip install flake8
         # stop the build if there are Python syntax errors or undefined names
-        flake8 karmabot --count --select=E9,F63,F7,F82 --show-source --statistics
+        poetry run flake8 karmabot --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. 
-        flake8 karmabot --count --exit-zero --max-complexity=15 --statistics
+        poetry run flake8 karmabot --count --exit-zero --max-complexity=15 --statistics
     - name: Lint with Radon
       run: |
-        pip install radon
-        radon cc karmabot -a -nc
+        poetry run radon cc karmabot -a -nc
